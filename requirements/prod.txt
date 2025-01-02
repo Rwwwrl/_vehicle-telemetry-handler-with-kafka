@@ -1,2 +1,9 @@
 kafka-python
 python-json-logger
+pydantic
+
+vehicle_telemetry_handler_with_kafka
+framework
+vehicle_geometry_intersection_ms
+vehicle_mock_telemetry_generator
+vehicle_geometry_intersection_ms_events
