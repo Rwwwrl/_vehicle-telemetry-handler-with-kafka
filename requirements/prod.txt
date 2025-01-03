@@ -7,3 +7,4 @@ framework
 vehicle_geometry_intersection_ms
 vehicle_mock_telemetry_generator
 vehicle_geometry_intersection_ms_events
+event_distribution_scheme_by_topics_registry

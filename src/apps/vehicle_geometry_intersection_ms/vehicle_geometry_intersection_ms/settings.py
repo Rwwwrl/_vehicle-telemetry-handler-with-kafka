@@ -1,12 +1,10 @@
 import logging.config
 from pathlib import Path
-from typing import List, Type
+from typing import List
 
 import yaml
 
-from framework.common.dto import DTO
-from framework.integrations_events.integration_event import IntegrationEvent
-from framework.kafka.hints import TopicName
+from event_distribution_scheme_by_topics_registry.kafka_consumer_polling_details import KafkaConsumerPollingDetails
 
 from vehicle_geometry_intersection_ms_events.events import (
     VehicleArrivedToLoadingArea,
@@ -27,18 +25,6 @@ def init_logging(logging_config_yaml_filepath: Path) -> None:
 
 
 init_logging(logging_config_yaml_filepath=BASE_DIR / 'logging_config.yaml')
-
-
-class KafkaConsumerPollingDetails(DTO):
-    topic: TopicName
-    """
-    Топик, на который подписан микросервис
-    """
-    events_processed_by_microservice: List[Type[IntegrationEvent]]
-    """
-    Эвенты, которые обрабатывает микросервис
-    """
-
 
 KAFKA_CONSUMER_POLLING_DETAILS = KafkaConsumerPollingDetails(
     topic=MICROSERVICE_NAME,
