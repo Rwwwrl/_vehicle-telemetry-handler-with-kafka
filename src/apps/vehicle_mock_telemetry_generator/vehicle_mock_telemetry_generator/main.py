@@ -6,8 +6,8 @@ from kafka import KafkaProducer
 from src import settings
 
 from framework.integrations_events.integration_event import IntegrationEvent
+from framework.integrations_events.integration_event_serde import IntegrationEventSerDe
 from framework.integrations_events.schema import EventsSchema
-from framework.integrations_events.serde import SerDe
 
 from vehicle_geometry_intersection_ms_events.events import (
     VehicleArrivedToLoadingArea,
@@ -46,7 +46,7 @@ def _push_events_to_kafka(events: List[IntegrationEvent], events_schema: EventsS
     logger.debug(f'producer {producer} was initialized')
 
     for event in events:
-        serialized_event = SerDe.serialize(event=event)
+        serialized_event = IntegrationEventSerDe.serialize(event=event)
 
         for topic in events_schema[type(event)]:
             producer.send(

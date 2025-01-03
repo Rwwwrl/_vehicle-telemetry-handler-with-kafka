@@ -1,4 +1,3 @@
-import json
 import logging
 from typing import Dict, List, NoReturn
 
@@ -8,23 +7,12 @@ from kafka.structs import TopicPartition
 
 from src import settings
 
-from framework.common.dto import DTO
 from framework.common.secs_to_millisecs import secs_to_millisecs
+from framework.integrations_events.integration_event_serde import IntegrationEventSerDe
 
 from vehicle_geometry_intersection_ms.app import VehicleGeometryIntersectionMSApp
 
 logger = logging.getLogger(VehicleGeometryIntersectionMSApp.app_name)
-
-
-class ReceivedMessageData(DTO):
-    event_name: str
-    data: dict
-
-
-class ReceivedMessage(DTO):
-    topic: str
-    partition: int
-    data: ReceivedMessageData
 
 
 def _run_kafka_consumer_polling() -> NoReturn:
@@ -44,29 +32,21 @@ def _run_kafka_consumer_polling() -> NoReturn:
     logger.debug('consumer is listening for new events...')
 
     while True:
-        topic_partition_to_messages: Dict[TopicPartition, List[ConsumerRecord]] = consumer.poll(
+        topic_partition_to_events: Dict[TopicPartition, List[ConsumerRecord]] = consumer.poll(
             max_records=10,
             timeout_ms=secs_to_millisecs(5),
         )
-        if topic_partition_to_messages:
-            for topic_partition, messages in topic_partition_to_messages.items():
-                logger.debug(f'there are {len(messages)} new message in topic "{topic_partition.topic}"')
+        if topic_partition_to_events:
+            for topic_partition, events in topic_partition_to_events.items():
+                logger.debug(f'there are {len(events)} new message in topic "{topic_partition.topic}"')
 
-                for message in messages:
-                    message_value: dict = json.loads(message.value)
-                    received_message_data = ReceivedMessage(
-                        data=ReceivedMessageData(
-                            event_name=message_value['event_name'],
-                            data=message_value['data'],
-                        ),
-                        partition=message.partition,
-                        topic=message.topic,
-                    )
-                    logger.debug(f'received message: {repr(received_message_data)}')
+                for event in events:
+                    event = IntegrationEventSerDe.deserialize(event_serialized_to_bytes=event.value)
+                    logger.debug(f'new event: {repr(event)}')
 
             consumer.commit()
         else:
-            logger.debug('there are no new messages...')
+            logger.debug('there are no new events...')
 
 
 def main() -> NoReturn:
