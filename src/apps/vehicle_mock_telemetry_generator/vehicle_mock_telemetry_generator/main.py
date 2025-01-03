@@ -1,15 +1,8 @@
 import logging
 from typing import List
 
-from kafka import KafkaProducer
-
-from event_distribution_scheme_by_topics_registry.events_distribution_scheme_by_topics import (
-    EVENT_DISTRIBUTION_SCHEME_BY_TOPICS as _EVENT_DISTRIBUTION_SCHEME_BY_TOPICS,
-)
-from event_distribution_scheme_by_topics_registry.settings import EVENT_DISTRIBUTION_SCHEME_BY_TOPICS
-
 from framework.integrations_events.integration_event import IntegrationEvent
-from framework.integrations_events.integration_event_serde import IntegrationEventSerDe
+from framework.kafka import KafkaProducer
 
 from vehicle_geometry_intersection_ms_events.events import (
     VehicleArrivedToLoadingArea,
@@ -44,32 +37,20 @@ def _mock_events_v1() -> List[IntegrationEvent]:
     ]
 
 
-def _push_events_to_kafka(
-    events: List[IntegrationEvent],
-    events_distribution_scheme_by_topics: _EVENT_DISTRIBUTION_SCHEME_BY_TOPICS,
-) -> None:
+def _push_events_to_kafka(events: List[IntegrationEvent]) -> None:
     producer = KafkaProducer(bootstrap_servers=settings.KAFKA_BOOTSTRAP_SERVERS)
 
     logger.debug(f'producer {producer} was initialized')
 
     for event in events:
-        serialized_event = IntegrationEventSerDe.serialize(event=event)
-
-        for topic in events_distribution_scheme_by_topics[type(event)]:
-            producer.send(
-                topic=topic,
-                value=serialized_event,
-            )
+        producer.send(event=event)
 
     producer.flush()
     producer.close()
 
 
 def main() -> None:
-    _push_events_to_kafka(
-        events=_mock_events_v1(),
-        events_distribution_scheme_by_topics=EVENT_DISTRIBUTION_SCHEME_BY_TOPICS,
-    )
+    _push_events_to_kafka(events=_mock_events_v1())
     logger.debug('new events were pushed to Kafka')
 
 
