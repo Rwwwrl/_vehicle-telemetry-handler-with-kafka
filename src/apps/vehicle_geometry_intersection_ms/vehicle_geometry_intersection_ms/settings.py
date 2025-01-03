@@ -11,7 +11,7 @@ from event_distribution_scheme_by_topics.microservice_as_kafka_consumer_details 
     ProducingRequirements,
 )
 
-from vehicle_geometry_intersection_ms_events.events import (
+from events import (
     VehicleArrivedToLoadingArea,
     VehicleDeparturedFromLoadingArea,
     VehicleDidMovementEvent,

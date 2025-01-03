@@ -3,6 +3,12 @@ from pydantic.types import PositiveFloat, PositiveInt
 from framework.common.dto import DTO
 from framework.kafka.integration_event import IntegrationEvent
 
+__all__ = (
+    'VehicleDidMovementEvent',
+    'VehicleArrivedToLoadingArea',
+    'VehicleDeparturedFromLoadingArea',
+)
+
 
 class VehiclePositionLatLon(DTO):
     lat: PositiveFloat
