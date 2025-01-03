@@ -3,11 +3,8 @@ from typing import List
 
 from kafka import KafkaProducer
 
-from src import settings
-
 from framework.integrations_events.integration_event import IntegrationEvent
 from framework.integrations_events.integration_event_serde import IntegrationEventSerDe
-from framework.integrations_events.schema import EventsSchema
 
 from vehicle_geometry_intersection_ms_events.events import (
     VehicleArrivedToLoadingArea,
@@ -15,6 +12,8 @@ from vehicle_geometry_intersection_ms_events.events import (
     VehicleDidMovementEvent,
     VehiclePositionLatLon,
 )
+
+from vehicle_mock_telemetry_generator import settings
 
 logger = logging.getLogger('vehicle_mock_telemetry_generator')
 
@@ -40,7 +39,7 @@ def _mock_events_v1() -> List[IntegrationEvent]:
     ]
 
 
-def _push_events_to_kafka(events: List[IntegrationEvent], events_schema: EventsSchema) -> None:
+def _push_events_to_kafka(events: List[IntegrationEvent], events_distribution_scheme_by_topics) -> None:
     producer = KafkaProducer(bootstrap_servers=settings.KAFKA_BOOTSTRAP_SERVERS)
 
     logger.debug(f'producer {producer} was initialized')
@@ -48,7 +47,7 @@ def _push_events_to_kafka(events: List[IntegrationEvent], events_schema: EventsS
     for event in events:
         serialized_event = IntegrationEventSerDe.serialize(event=event)
 
-        for topic in events_schema[type(event)]:
+        for topic in events_distribution_scheme_by_topics[type(event)]:
             producer.send(
                 topic=topic,
                 value=serialized_event,
@@ -59,10 +58,9 @@ def _push_events_to_kafka(events: List[IntegrationEvent], events_schema: EventsS
 
 
 def main() -> None:
-    settings.init_logging()
     _push_events_to_kafka(
         events=_mock_events_v1(),
-        events_schema=settings.EVENT_SCHEMA,
+        events_distribution_scheme_by_topics=settings.EVENTS_DISTRIBUTION_SCHEME_BY_TOPICS,
     )
     logger.debug('new events were pushed to Kafka')
 

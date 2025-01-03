@@ -5,22 +5,21 @@ from kafka import KafkaConsumer
 from kafka.consumer.fetcher import ConsumerRecord
 from kafka.structs import TopicPartition
 
-from src import settings
-
 from framework.common.secs_to_millisecs import secs_to_millisecs
 from framework.integrations_events.integration_event_serde import IntegrationEventSerDe
 
-from vehicle_geometry_intersection_ms.app import VehicleGeometryIntersectionMSApp
+from vehicle_geometry_intersection_ms import settings
 
-logger = logging.getLogger(VehicleGeometryIntersectionMSApp.app_name)
+logger = logging.getLogger(settings.MICROSERVICE_NAME)
 
 
 def _run_kafka_consumer_polling() -> NoReturn:
-    client_id = f'kafka_consumer_{VehicleGeometryIntersectionMSApp.app_name}_1'
-    group_id = VehicleGeometryIntersectionMSApp.app_name
+    # TODO: заменить потом
+    client_id = 'client_id'
+    group_id = 'group_id'
 
     consumer = KafkaConsumer(
-        VehicleGeometryIntersectionMSApp.topic(),
+        settings.KAFKA_CONSUMER_POLLING_DETAILS.topic,
         client_id=client_id,
         group_id=group_id,
         bootstrap_servers=settings.KAFKA_BOOTSTRAP_SERVERS,
@@ -50,7 +49,6 @@ def _run_kafka_consumer_polling() -> NoReturn:
 
 
 def main() -> NoReturn:
-    settings.init_logging()
     _run_kafka_consumer_polling()
 
 
