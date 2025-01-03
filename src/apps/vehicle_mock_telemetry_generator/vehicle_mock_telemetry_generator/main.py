@@ -1,15 +1,17 @@
 import logging
 from typing import List
 
+from events import (
+    VehicleArrivedToLoadingAreaEvent,
+    VehicleDeparturedFromLoadingAreaEvent,
+    VehicleDidMovementEvent,
+    VehicleFinishedLoadingEvent,
+    VehiclePositionLatLon,
+    VehicleStartedLoadingEvent,
+)
+
 from framework.kafka import KafkaProducer
 from framework.kafka.integration_event import IntegrationEvent
-
-from vehicle_geometry_intersection_ms_events.events import (
-    VehicleArrivedToLoadingArea,
-    VehicleDeparturedFromLoadingArea,
-    VehicleDidMovementEvent,
-    VehiclePositionLatLon,
-)
 
 from vehicle_mock_telemetry_generator import settings
 
@@ -22,11 +24,19 @@ def _mock_events_v1() -> List[IntegrationEvent]:
             vehicle_id=1,
             new_position=VehiclePositionLatLon(lat=10.0, lon=10.0),
         ),
-        VehicleArrivedToLoadingArea(
+        VehicleArrivedToLoadingAreaEvent(
             vehicle_id=1,
             loading_area_id=1,
         ),
-        VehicleDeparturedFromLoadingArea(
+        VehicleStartedLoadingEvent(
+            vehicle_id=1,
+            loading_area_id=1,
+        ),
+        VehicleFinishedLoadingEvent(
+            vehicle_id=1,
+            loading_area_id=1,
+        ),
+        VehicleDeparturedFromLoadingAreaEvent(
             vehicle_id=1,
             loading_area_id=1,
         ),

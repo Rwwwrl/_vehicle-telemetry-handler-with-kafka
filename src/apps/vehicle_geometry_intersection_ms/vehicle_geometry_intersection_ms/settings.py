@@ -12,8 +12,8 @@ from event_distribution_scheme_by_topics.microservice_as_kafka_consumer_details 
 )
 
 from events import (
-    VehicleArrivedToLoadingArea,
-    VehicleDeparturedFromLoadingArea,
+    VehicleArrivedToLoadingAreaEvent,
+    VehicleDeparturedFromLoadingAreaEvent,
     VehicleDidMovementEvent,
 )
 
@@ -39,11 +39,11 @@ MICROSERVICE_AS_KAFKA_CONSUMER_DETAILS = MicroserviceAsKafkaConsumerDetails(
             producing_requirements=ProducingRequirements(key=operator.attrgetter('vehicle_id')),
         ),
         EventProcessedByMicroservice(
-            event_cls=VehicleArrivedToLoadingArea,
+            event_cls=VehicleArrivedToLoadingAreaEvent,
             producing_requirements=ProducingRequirements(key=operator.attrgetter('vehicle_id')),
         ),
         EventProcessedByMicroservice(
-            event_cls=VehicleDeparturedFromLoadingArea,
+            event_cls=VehicleDeparturedFromLoadingAreaEvent,
             producing_requirements=ProducingRequirements(key=operator.attrgetter('vehicle_id')),
         ),
     ],

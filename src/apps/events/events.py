@@ -5,8 +5,10 @@ from framework.kafka.integration_event import IntegrationEvent
 
 __all__ = (
     'VehicleDidMovementEvent',
-    'VehicleArrivedToLoadingArea',
-    'VehicleDeparturedFromLoadingArea',
+    'VehicleArrivedToLoadingAreaEvent',
+    'VehicleDeparturedFromLoadingAreaEvent',
+    'VehicleStartedLoadingEvent',
+    'VehicleFinishedLoadingEvent',
 )
 
 
@@ -20,11 +22,21 @@ class VehicleDidMovementEvent(IntegrationEvent):
     new_position: VehiclePositionLatLon
 
 
-class VehicleArrivedToLoadingArea(IntegrationEvent):
+class VehicleArrivedToLoadingAreaEvent(IntegrationEvent):
     vehicle_id: PositiveInt
     loading_area_id: PositiveInt
 
 
-class VehicleDeparturedFromLoadingArea(IntegrationEvent):
+class VehicleDeparturedFromLoadingAreaEvent(IntegrationEvent):
+    vehicle_id: PositiveInt
+    loading_area_id: PositiveInt
+
+
+class VehicleStartedLoadingEvent(IntegrationEvent):
+    vehicle_id: PositiveInt
+    loading_area_id: PositiveInt
+
+
+class VehicleFinishedLoadingEvent(IntegrationEvent):
     vehicle_id: PositiveInt
     loading_area_id: PositiveInt

@@ -3,12 +3,15 @@ from typing import List
 
 import vehicle_geometry_intersection_ms.settings
 
+import vehicle_loading_unloading_ms.settings
+
 from .events_distribution_scheme_by_topics import EventDistributionSchemeByTopics, TopicDTO
 from .microservice_as_kafka_consumer_details import MicroserviceAsKafkaConsumerDetails
 
 # TODO: пока опустим момент как именно формируется этот список
 MICROSERVICES_AS_KAFKA_CONSUMERS_DETAILS: List[MicroserviceAsKafkaConsumerDetails] = [
     vehicle_geometry_intersection_ms.settings.MICROSERVICE_AS_KAFKA_CONSUMER_DETAILS,
+    vehicle_loading_unloading_ms.settings.MICROSERVICE_AS_KAFKA_CONSUMER_DETAILS,
 ]
 
 
