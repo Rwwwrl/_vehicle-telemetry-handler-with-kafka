@@ -3,6 +3,11 @@ from typing import List
 
 from kafka import KafkaProducer
 
+from event_distribution_scheme_by_topics_registry.events_distribution_scheme_by_topics import (
+    EVENT_DISTRIBUTION_SCHEME_BY_TOPICS as _EVENT_DISTRIBUTION_SCHEME_BY_TOPICS,
+)
+from event_distribution_scheme_by_topics_registry.settings import EVENT_DISTRIBUTION_SCHEME_BY_TOPICS
+
 from framework.integrations_events.integration_event import IntegrationEvent
 from framework.integrations_events.integration_event_serde import IntegrationEventSerDe
 
@@ -39,7 +44,10 @@ def _mock_events_v1() -> List[IntegrationEvent]:
     ]
 
 
-def _push_events_to_kafka(events: List[IntegrationEvent], events_distribution_scheme_by_topics) -> None:
+def _push_events_to_kafka(
+    events: List[IntegrationEvent],
+    events_distribution_scheme_by_topics: _EVENT_DISTRIBUTION_SCHEME_BY_TOPICS,
+) -> None:
     producer = KafkaProducer(bootstrap_servers=settings.KAFKA_BOOTSTRAP_SERVERS)
 
     logger.debug(f'producer {producer} was initialized')
@@ -60,7 +68,7 @@ def _push_events_to_kafka(events: List[IntegrationEvent], events_distribution_sc
 def main() -> None:
     _push_events_to_kafka(
         events=_mock_events_v1(),
-        events_distribution_scheme_by_topics=settings.EVENTS_DISTRIBUTION_SCHEME_BY_TOPICS,
+        events_distribution_scheme_by_topics=EVENT_DISTRIBUTION_SCHEME_BY_TOPICS,
     )
     logger.debug('new events were pushed to Kafka')
 
