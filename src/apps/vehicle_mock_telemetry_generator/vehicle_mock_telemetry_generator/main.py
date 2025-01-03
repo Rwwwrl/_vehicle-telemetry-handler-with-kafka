@@ -1,8 +1,8 @@
 import logging
 from typing import List
 
-from framework.integrations_events.integration_event import IntegrationEvent
 from framework.kafka import KafkaProducer
+from framework.kafka.integration_event import IntegrationEvent
 
 from vehicle_geometry_intersection_ms_events.events import (
     VehicleArrivedToLoadingArea,

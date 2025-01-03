@@ -1,7 +1,7 @@
 from pydantic.types import PositiveFloat, PositiveInt
 
 from framework.common.dto import DTO
-from framework.integrations_events.integration_event import IntegrationEvent
+from framework.kafka.integration_event import IntegrationEvent
 
 
 class VehiclePositionLatLon(DTO):

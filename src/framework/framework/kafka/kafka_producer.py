@@ -2,10 +2,10 @@ from typing import List
 
 from kafka import KafkaProducer as LibKafkaProducer
 
-from event_distribution_scheme_by_topics_registry.settings import EVENT_DISTRIBUTION_SCHEME_BY_TOPICS
+from event_distribution_scheme_by_topics.settings import EVENT_DISTRIBUTION_SCHEME_BY_TOPICS
 
-from framework.integrations_events.integration_event import IntegrationEvent
-from framework.integrations_events.integration_event_serde import IntegrationEventSerDe
+from framework.kafka.integration_event import IntegrationEvent
+from framework.kafka.integration_event.integration_event_serde import IntegrationEventSerDe
 
 __all__ = ('KafkaProducer', )
 
@@ -17,10 +17,12 @@ class KafkaProducer:
 
     def send(self, event: IntegrationEvent) -> None:
         serialized_to_bytes_event = IntegrationEventSerDe.serialize(event=event)
-        for topic in self._events_distrubution_scheme_by_topics[type(event)]:
+        for topic_dto in self._events_distrubution_scheme_by_topics[type(event)]:
             self._lib_kafka_producer.send(
-                topic=topic,
+                topic=topic_dto.name,
+                key=bytes(topic_dto.producing_requirements.key(event)),
                 value=serialized_to_bytes_event,
+                partition=topic_dto.producing_requirements.partition(event),
             )
 
     def flush(self) -> None:

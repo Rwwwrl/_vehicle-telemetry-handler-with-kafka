@@ -4,9 +4,8 @@ from kafka import KafkaConsumer as LibKafkaConsumer
 from kafka.consumer.fetcher import ConsumerRecord
 from kafka.structs import TopicPartition
 
-from framework.common.secs_to_millisecs import secs_to_millisecs
-from framework.integrations_events.integration_event import IntegrationEvent
-from framework.integrations_events.integration_event_serde import IntegrationEventSerDe
+from framework.kafka.integration_event import IntegrationEvent
+from framework.kafka.integration_event.integration_event_serde import IntegrationEventSerDe
 
 from .hints import TopicName
 
@@ -27,7 +26,7 @@ class KafkaConsumer:
         while True:
             topic_partition_to_events: Dict[TopicPartition, List[ConsumerRecord]] = self._lib_kafka_consumer.poll(
                 max_records=max_records,
-                timeout_ms=secs_to_millisecs(timeout_secs),
+                timeout_ms=timeout_secs * 1000,
             )
             if topic_partition_to_events:
                 for events in topic_partition_to_events.values():

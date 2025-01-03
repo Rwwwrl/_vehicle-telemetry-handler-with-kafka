@@ -1,10 +1,15 @@
 import logging.config
+import operator
 from pathlib import Path
 from typing import List
 
 import yaml
 
-from event_distribution_scheme_by_topics_registry.kafka_consumer_polling_details import KafkaConsumerPollingDetails
+from event_distribution_scheme_by_topics.microservice_as_kafka_consumer_details import (
+    EventProcessedByMicroservice,
+    MicroserviceAsKafkaConsumerDetails,
+    ProducingRequirements,
+)
 
 from vehicle_geometry_intersection_ms_events.events import (
     VehicleArrivedToLoadingArea,
@@ -26,12 +31,21 @@ def init_logging(logging_config_yaml_filepath: Path) -> None:
 
 init_logging(logging_config_yaml_filepath=BASE_DIR / 'logging_config.yaml')
 
-KAFKA_CONSUMER_POLLING_DETAILS = KafkaConsumerPollingDetails(
-    topic=MICROSERVICE_NAME,
+MICROSERVICE_AS_KAFKA_CONSUMER_DETAILS = MicroserviceAsKafkaConsumerDetails(
+    topicname=MICROSERVICE_NAME,
     events_processed_by_microservice=[
-        VehicleArrivedToLoadingArea,
-        VehicleDeparturedFromLoadingArea,
-        VehicleDidMovementEvent,
+        EventProcessedByMicroservice(
+            event_cls=VehicleDidMovementEvent,
+            producing_requirements=ProducingRequirements(key=operator.attrgetter('vehicle_id')),
+        ),
+        EventProcessedByMicroservice(
+            event_cls=VehicleArrivedToLoadingArea,
+            producing_requirements=ProducingRequirements(key=operator.attrgetter('vehicle_id')),
+        ),
+        EventProcessedByMicroservice(
+            event_cls=VehicleDeparturedFromLoadingArea,
+            producing_requirements=ProducingRequirements(key=operator.attrgetter('vehicle_id')),
+        ),
     ],
 )
 

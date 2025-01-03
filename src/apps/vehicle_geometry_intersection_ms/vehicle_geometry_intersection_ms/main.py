@@ -14,7 +14,7 @@ def _run_kafka_consumer_polling() -> NoReturn:
     group_id = settings.MICROSERVICE_NAME
 
     consumer = KafkaConsumer(
-        topic=settings.KAFKA_CONSUMER_POLLING_DETAILS.topic,
+        topic=settings.MICROSERVICE_AS_KAFKA_CONSUMER_DETAILS.topicname,
         client_id=client_id,
         group_id=group_id,
         bootstrap_servers=settings.KAFKA_BOOTSTRAP_SERVERS,
